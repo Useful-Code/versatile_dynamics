@@ -8,8 +8,9 @@
 *		Date: 25/Sept/2014
 */
 
-#include "versatile_dynamics.hpp"
-
+#include "test_robot/versatile_dynamics.hpp"
+#include <cstdlib>
+#include <stdio.h>
 versatile_dynamics::versatile_dynamics(){
 	out.clear();
 	in.clear();
@@ -35,11 +36,13 @@ versatile_dynamics::versatile_dynamics(std::vector<double> b_extern, std::vector
 			out[x] = 0.0;
 		}
 
-		return EXIT_SUCCESS;
-	}else{
-		return EXIT_FAILURE;
 	}
+	printf("coefficent lists b and a are not of same length \n");
+
 }
+
+versatile_dynamics::~versatile_dynamics(){}
+
 
 int versatile_dynamics::reset(std::vector<double> b_extern, std::vector<double> a_extern){
 	unsigned int x;
@@ -135,7 +138,7 @@ int versatile_dynamics::put_in(double force){
 	}
 }
 
-int versatile_dynamics::get_out(double &force){
+int versatile_dynamics::get_out(double *force){
 	*force = out[0];
 }
 double versatile_dynamics::get_out(void){
@@ -145,7 +148,7 @@ double versatile_dynamics::get_out(void){
 void versatile_dynamics::shift(double force){
 	unsigned int x;
 	///Starting from the top shift the data down. We will lose the LS double
-	for(x = (vector_size - 1), x > 0; x--){
+	for(x = (vector_size - 1); x > 0; x--){
 		out[x] = out[x-1];
 		in[x] = in[x-1];
 

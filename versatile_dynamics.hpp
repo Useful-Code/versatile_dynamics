@@ -11,12 +11,10 @@
 #ifndef __VERSATILE_DYNAMICS__
 #define __VERSATILE_DYNAMICS__
 
-#include <std::vector>
+#include <vector>
 
-#define EXIT_FAILURE -1
-#define EXIT_SUCCESS 1
 
-class versatile_dynamics:
+class versatile_dynamics
 {
 
 public:
@@ -25,7 +23,7 @@ public:
 	~versatile_dynamics();
 
 	int reset(std::vector<double> , std::vector<double>);
-	int reset();
+	void reset();
 
 	void set_a(std::vector<double>);
 	void set_b(std::vector<double>);
@@ -33,7 +31,7 @@ public:
 	int put_in(double force, unsigned int periods_since_last);
 	int put_in(double force);
 
-	int get_out(double &);
+	int get_out(double *);
 	double get_out(void);
 private:
 	void shift(double);
