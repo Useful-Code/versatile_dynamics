@@ -12,26 +12,27 @@
 #define __VERSATILE_DYNAMICS__
 
 #include <vector>
-
+#include <cstdlib>
+#include <stdio.h>
 
 class versatile_dynamics
 {
 
 public:
-	versatile_dynamics();
+	versatile_dynamics(void);
 	versatile_dynamics(std::vector<double> , std::vector<double>);
-	~versatile_dynamics();
+	~versatile_dynamics(void);
 
 	int reset(std::vector<double> , std::vector<double>);
-	void reset();
+	void reset(void);
 
 	void set_a(std::vector<double>);
 	void set_b(std::vector<double>);
 
-	int put_in(double force, unsigned int periods_since_last);
-	int put_in(double force);
+	int put_in(double , unsigned int );
+	int put_in(double );
 
-	int get_out(double *);
+	void get_out(double *);
 	double get_out(void);
 private:
 	void shift(double);

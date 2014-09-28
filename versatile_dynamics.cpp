@@ -8,10 +8,8 @@
 *		Date: 25/Sept/2014
 */
 
-#include "test_robot/versatile_dynamics.hpp"
-#include <cstdlib>
-#include <stdio.h>
-versatile_dynamics::versatile_dynamics(){
+#include "versatile_dynamics.hpp"
+versatile_dynamics::versatile_dynamics(void){
 	out.clear();
 	in.clear();
 
@@ -41,27 +39,13 @@ versatile_dynamics::versatile_dynamics(std::vector<double> b_extern, std::vector
 
 }
 
-versatile_dynamics::~versatile_dynamics(){}
+versatile_dynamics::~versatile_dynamics(void){}
 
 
 int versatile_dynamics::reset(std::vector<double> b_extern, std::vector<double> a_extern){
-	unsigned int x;
 	if(b_extern.size() == a_extern.size()){
-		vector_size = b_extern.size();
-
-		b.resize(vector_size);
-		a.resize(vector_size);
-		b = b_extern;
-		a = a_extern;
-
-		out.resize(vector_size);
-		in.resize(vector_size);
-
-		for(x = 0; x < vector_size; x++){
-			in[x] = 0.0;
-			out[x] = 0.0;
-		}
-
+		set_b(b_extern);
+		set_a(a_extern);
 		return EXIT_SUCCESS;
 	}else{
 		return EXIT_FAILURE;
@@ -106,18 +90,16 @@ void versatile_dynamics::set_b(std::vector<double> b_extern){
 
 
 ///If a controller is feeding the sytem and it is running at a lower frequency you can use this one.
-int versatile_dynamics::put_in(double force, unsigned int periods_since_last){
-	double stored_in = in[0];
+int versatile_dynamics::put_in(double force, unsigned int num_of_periods_until_next){
 	unsigned int x;
-
 	if(b.size() == a.size() ){
-		for(x = 0; x < (periods_since_last - 1); x++){
-			shift(stored_in);
+
+		for(x = 0; x < num_of_periods_until_next ; x++){
+			shift(force);
 			IIR();
 		}
 
-		shift(force);
-		IIR();
+
 		return EXIT_SUCCESS;
 	}else{
 		printf("coefficent lists b and a are not of same length \n");
@@ -138,9 +120,10 @@ int versatile_dynamics::put_in(double force){
 	}
 }
 
-int versatile_dynamics::get_out(double *force){
+void versatile_dynamics::get_out(double *force){
 	*force = out[0];
 }
+
 double versatile_dynamics::get_out(void){
 	return out[0];
 }
@@ -158,11 +141,11 @@ void versatile_dynamics::shift(double force){
 }
 
 ///Run the IIR filter process
-void versatile_dynamics::IIR(){
+void versatile_dynamics::IIR(void){
 	unsigned int x;
 
 	for(x = 0; x < vector_size; x++){
-		out[0] = out[0] +  ( b[x] * in[x] - a[x] * out[x] );
+		out[0] = out[0] +   b[x] * in[x] - a[x] * out[x] ;
 	}
 }
 
